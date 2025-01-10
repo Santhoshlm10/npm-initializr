@@ -1,6 +1,5 @@
 import { AppHeaderLogo } from "@/components/app/AppHeaderLogo";
 import DownloadButton from "@/components/app/DownloadButton";
-import { Button } from "@/components/ui/button";
 
 export default function Home() {
   return (
