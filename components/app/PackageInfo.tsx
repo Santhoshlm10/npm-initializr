@@ -62,7 +62,7 @@ const PackageInfo = () => {
     return (
         <div>
             <Label className="text-base font-bold">Package Details</Label>
-            <div className="mt-2 w-11/12">
+            <div className="mt-2 w-12/12">
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                         <FormField
