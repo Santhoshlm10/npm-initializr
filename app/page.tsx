@@ -10,7 +10,7 @@ export default function Home() {
         <AppHeaderLogo />
         <hr className="h-px bg-gray-200 border-0 dark:bg-gray-700"/>
       </div>
-      <div className="gap-16 items-center  py-8 px-4 mx-auto max-w-screen-2xl lg:grid lg:grid-cols-2 lg:py-8 lg:px-6 ">
+      <div className="gap-16 py-8 px-4 mx-auto max-w-screen-2xl lg:grid lg:grid-cols-2 lg:py-8 lg:px-6 ">
         <PackageInfo />
         <PackageDependency />
       </div>

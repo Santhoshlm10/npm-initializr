@@ -1,0 +1,27 @@
+package name = text input
+version  text input
+desctiption = text area
+entry point = text input
+test command = text input
+git repository = text input
+keywords = comma seperated
+author = text input
+licence = dropdown
+
+
+{
+  "name": "asdf",
+  "version": "1.0.0",
+  "description": "dsf",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm tes"
+  },
+  "keywords": [
+    "1",
+    "2",
+    "3"
+  ],
+  "author": "saf",
+  "license": "ISC"
+}
