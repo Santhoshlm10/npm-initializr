@@ -15,14 +15,49 @@ import { Textarea } from "@/components/ui/textarea"
 
 const PackageInfo = () => {
 
-    const form = useForm<z.infer<any>>({
+    const formSchema = z.object({
+        name: z.string().min(2, {
+          message: "Username must be at least 2 characters.",
+        }),
+        version: z.string({
+            message: "Version is required"
+        }),
+        description: z.string({
+            message: "Description is required"
+        }),
+        main: z.string({
+            message: "main is required"
+        }),
+        test: z.string({
+            message: "test is required"
+        }),
+        keywords: z.string({
+            message: "keywords is required"
+        }),
+        author: z.string({
+            message: "author is required"
+        }),
+        licence: z.string({
+            message: "author is required"
+        }),
+    
+      })
+      const form = useForm<z.infer<typeof formSchema>>({
         defaultValues: {
-            username: "",
+            name: "",
+            version: "",
+            description: "",
+            main: "",
+            test: "",
+            keywords: "",
+            author: "",
+            licence: ""
         },
     })
 
-    function onSubmit(values: any) {
-        console.log("values", values)
+    function onSubmit(values: Record<string,string>) {
+        const res = formSchema["~validate"](values)
+        console.log("values", res)
     }
     return (
         <div>
