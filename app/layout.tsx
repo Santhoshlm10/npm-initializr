@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 
 import "./globals.css";
+import ReactQueryProvider from "./ReactQueryProvider";
 
 
 const poppins = Poppins({
@@ -26,7 +27,9 @@ export default function RootLayout({
       <body
         className={`${poppins.variable}  antialiased`}
       >
+        <ReactQueryProvider>
         {children}
+        </ReactQueryProvider>
       </body>
     </html>
   );

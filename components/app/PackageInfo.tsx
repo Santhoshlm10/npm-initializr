@@ -108,7 +108,7 @@ const PackageInfo = () => {
                                 <FormItem>
                                     <FormLabel>Entry Point</FormLabel>
                                     <FormControl>
-                                        <Input defaultValue={"index.js"} placeholder="Enter entry point" {...field} />
+                                        <Input  placeholder="Enter entry point" {...field} />
                                     </FormControl>
                                 </FormItem>
                             )}
