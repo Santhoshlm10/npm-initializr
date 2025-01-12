@@ -1,22 +1,16 @@
-import axios from "axios";
+import { PackageResponse } from "@/models/package";
+
+const SEARCH_URL = "https://registry.npmjs.com/-/v1/search?text="
+const PACKAGE_INFO = "https://registry.npmjs.com/"
 
 
-const SEARCH_URL = "https://www.npmjs.com/search/suggestions";
-const PACKAGE_INFO = "https://www.npmjs.com/package/"
-
-let headersList = {
-    "Accept": "*/*",
-    "User-Agent": "Thunder Client (https://www.thunderclient.com)" 
-   }
-   
-
-async function getData(data: Record<string,string>) {
-    let response = await axios.request(data);
-    return response.data;
+async function getData(url:string) {
+    const response = await fetch(url)
+    return await response.json();
 }
-
-
 export async function getSuggesstions(keyword: string) {
-    const response = await axios.get(`/api/suggestions?q=${keyword}`);
-    return response.data;
-  }
+    return await getData(SEARCH_URL + keyword) as PackageResponse
+}
+export async function getPackageInfo(packageName:string){
+    return await getData(PACKAGE_INFO + packageName)
+}
