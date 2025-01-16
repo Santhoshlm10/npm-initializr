@@ -7,7 +7,6 @@ import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 import { useState } from "react";
 
-type ObjectTemplate = Record<string,string>
 
 export interface IPackageInfo  {
   name:string;
@@ -36,7 +35,6 @@ export default function Home() {
     description:'',
     keywords:[]
   });
-  console.log("ChangePackage",packageInfo)
   // const [dependencyList,setDependencyList] = useState<ObjectTemplate>({});
 
   const handleDownloadClick = async () => {
