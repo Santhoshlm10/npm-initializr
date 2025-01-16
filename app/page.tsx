@@ -58,7 +58,7 @@ export default function Home() {
         <PackageInfo setPackageInfo={setPackageInfo} packageInfo={packageInfo}/>
         <PackageDependency />
       </div>
-      <div>
+      <div className="mb-6">
         <DownloadButton onClick={handleDownloadClick}/>
       </div>
     </div>

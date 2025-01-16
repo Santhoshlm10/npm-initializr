@@ -46,3 +46,4 @@ export type PackageResponse = {
     time: string;
     total: number
 }
+
