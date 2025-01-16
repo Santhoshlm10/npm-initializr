@@ -6,6 +6,7 @@ import PackageInfo from "@/components/app/PackageInfo";
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 import { useState } from "react";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 
 export interface IPackageInfo  {
@@ -46,6 +47,8 @@ export default function Home() {
   }
 
   return (
+    <TooltipProvider>
+
     <div className="m-2 p-2">
       <div>
         <AppHeaderLogo />
@@ -59,5 +62,6 @@ export default function Home() {
         <DownloadButton onClick={handleDownloadClick}/>
       </div>
     </div>
+    </TooltipProvider>
   );
 }

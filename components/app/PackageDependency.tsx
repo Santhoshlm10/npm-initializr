@@ -33,6 +33,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { ScrollArea } from "../ui/scroll-area";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 
 const PackageDependency = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -159,26 +160,45 @@ const PackageDependency = () => {
                 <DialogTitle>Import Packages</DialogTitle>
               </DialogHeader>
               <div>
-                <Input
-                  placeholder="Search for packages"
-                  onChange={(e) => debounced(e.target.value)}
-                />
                 <div className="flex flex-row items-center gap-2 mt-4">
                   <div>
                     <ScrollArea className="h-96 w-96 rounded-md border">
                       <div className="p-4">
                         <Label className="text-sm font-medium leading-none">Package List</Label>
+                        <Input
+                          placeholder="Search for packages"
+                          onChange={(e) => debounced(e.target.value)}
+                          className="mt-2"
+                        />
                       </div>
                     </ScrollArea>
                   </div>
                   <div className="w-24">
                     <div className="flex flex-col items-center justify-center gap-4">
-                      <Button variant="outline" size="icon">
-                        <ChevronRight />
-                      </Button>
-                      <Button variant="outline" size="icon">
+
+
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button variant="outline" size="icon">
+                            <ChevronRight />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <Label>Include</Label>
+                        </TooltipContent>
+                      </Tooltip>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                        <Button variant="outline" size="icon">
                         <ChevronLeft />
                       </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <Label>Exclude</Label>
+                        </TooltipContent>
+                      </Tooltip>
+
+  
                     </div>
                   </div>
                   <div>
