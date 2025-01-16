@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
-import {  useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";
 import {
@@ -13,6 +13,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import {
+  ChevronLeft,
+  ChevronRight,
   CircleX,
   OctagonAlert,
   PlusIcon,
@@ -30,6 +32,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { ScrollArea } from "../ui/scroll-area";
 
 const PackageDependency = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -48,7 +51,6 @@ const PackageDependency = () => {
     enabled: false,
   });
 
-  console.log("LoadingData", data);
 
   const ErrorView = () => {
     return (
@@ -70,7 +72,7 @@ const PackageDependency = () => {
 
   const Loader = () => {
     return (
-      <div style={{margin:"1px"}} className="w-full max-w-full p-0 bg-gray-200 rounded h-1 relative overflow-hidden">
+      <div style={{ margin: "1px" }} className="w-full max-w-full p-0 bg-gray-200 rounded h-1 relative overflow-hidden">
         <div className="progress-bar absolute top-0 left-0 h-full bg-black">
         </div>
         <style jsx>{`
@@ -112,7 +114,7 @@ const PackageDependency = () => {
                     setSelectedPackages((c) => [...c].filter((c) => c != data.package.name))
                   }
                 >
-                  <CircleX/>
+                  <CircleX />
                   Remove
                 </Button>
               ) : (
@@ -145,42 +147,60 @@ const PackageDependency = () => {
         <div className="flex gap-2 items-center justify-between">
           <Label className="text-base font-bold">Package Dependency</Label>
           <Button variant={"outline"} onClick={() => setIsOpen(true)}>
-            Add Dependency
+            Import Packages
           </Button>
         </div>
       </div>
       {isOpen && (
-        <>
+        <div>
           <Dialog open={isOpen} onOpenChange={setIsOpen}>
-            <DialogContent className="min-w-[900]">
+            <DialogContent className="min-w-[930]">
               <DialogHeader className="space-y-6">
-                <DialogTitle>Add Packages</DialogTitle>
-                <div className="relative h-10 w-full">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 z-10" />
-                  <Input
-                    type="text"
-                    placeholder="Search package name"
-                    className="pl-10 pr-3 py-2 text-md w-full border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-[#6E23DD] focus:border-transparent" // Add additional styling as needed
-                    onChange={(e: any) => debounced(e.target.value)}
-                  />
-                </div>
-                {
-                  isFetching && <Loader/>
-                }
-                <DialogDescription className="h-96 overflow-y-scroll">
-                  {isError && <ErrorView />}
-                  <div className="space-y-2">
-                    {data &&
-                      data?.objects &&
-                      data?.objects.map((item: PackageInfo, index: number) => {
-                        return RenderPackage(item, index);
-                      })}
-                  </div>
-                </DialogDescription>
+                <DialogTitle>Import Packages</DialogTitle>
               </DialogHeader>
+              <div>
+                <Input
+                  placeholder="Search for packages"
+                  onChange={(e) => debounced(e.target.value)}
+                />
+                <div className="flex flex-row items-center gap-2 mt-4">
+                  <div>
+                    <ScrollArea className="h-96 w-96 rounded-md border">
+                      <div className="p-4">
+                        <Label className="text-sm font-medium leading-none">Package List</Label>
+                      </div>
+                    </ScrollArea>
+                  </div>
+                  <div className="w-24">
+                    <div className="flex flex-col items-center justify-center gap-4">
+                      <Button variant="outline" size="icon">
+                        <ChevronRight />
+                      </Button>
+                      <Button variant="outline" size="icon">
+                        <ChevronLeft />
+                      </Button>
+                    </div>
+                  </div>
+                  <div>
+                    <ScrollArea className="h-96 w-96 rounded-md border">
+                      <div className="p-4">
+                        <Label className="text-sm font-medium leading-none">Selected Packages</Label>
+                      </div>
+                    </ScrollArea>
+                  </div>
+                </div>
+                <div className="flex justify-end gap-4 mt-4">
+                  <Button variant={"outline"} onClick={() => setIsOpen(false)}>
+                    Cancel
+                  </Button>
+                  <Button onClick={() => setIsOpen(false)}>
+                    Apply Changes
+                  </Button>
+                </div>
+              </div>
             </DialogContent>
           </Dialog>
-        </>
+        </div>
       )}
     </>
   );

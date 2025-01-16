@@ -1,168 +1,111 @@
 "use client"
-
-import { useForm } from "react-hook-form"
-import { z } from "zod"
-import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-} from "@/components/ui/form"
+import { IPackageInfo } from "@/app/page";
 import { Label } from "../ui/label";
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
+import { ChangeEvent } from "react";
 
-const PackageInfo = () => {
+interface PackageInfoProps {
+    setPackageInfo: (data:IPackageInfo) => void;
+    packageInfo: IPackageInfo;
+}
 
-    const formSchema = z.object({
-        name: z.string().min(2, {
-          message: "Username must be at least 2 characters.",
-        }),
-        version: z.string({
-            message: "Version is required"
-        }),
-        description: z.string({
-            message: "Description is required"
-        }),
-        main: z.string({
-            message: "main is required"
-        }),
-        test: z.string({
-            message: "test is required"
-        }),
-        keywords: z.string({
-            message: "keywords is required"
-        }),
-        author: z.string({
-            message: "author is required"
-        }),
-        licence: z.string({
-            message: "author is required"
-        }),
-    
-      })
-      const form = useForm<z.infer<typeof formSchema>>({
-        defaultValues: {
-            name: "",
-            version: "",
-            description: "",
-            main: "",
-            test: "",
-            keywords: "",
-            author: "",
-            licence: ""
-        },
-    })
 
-    function onSubmit(values: Record<string,string>) {
-        const res = formSchema["~validate"](values)
-        console.log("values", res)
-    }
+const PackageInfo = ({ setPackageInfo, packageInfo }: PackageInfoProps) => {
+
     return (
         <div>
             <Label className="text-base font-bold">Package Details</Label>
             <div className="mt-2 w-12/12">
-                <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                        <FormField
-                            control={form.control}
-                            name="name"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Package Name</FormLabel>
-                                    <FormControl>
-                                        <Input placeholder="Enter package name" {...field} />
-                                    </FormControl>
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="version"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Package Version</FormLabel>
-                                    <FormControl>
-                                        <Input placeholder="Enter version" {...field} />
-                                    </FormControl>
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="description"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Package Description</FormLabel>
-                                    <FormControl>
-                                        <Textarea placeholder="Enter package description" {...field} />
-                                    </FormControl>
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="main"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Entry Point</FormLabel>
-                                    <FormControl>
-                                        <Input  placeholder="Enter entry point" {...field} />
-                                    </FormControl>
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="test"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Entry Test Command</FormLabel>
-                                    <FormControl>
-                                        <Input placeholder="Enter test command" {...field} />
-                                    </FormControl>
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="keywords"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Entry Keywords (comma seperated)</FormLabel>
-                                    <FormControl>
-                                        <Input placeholder="Enter keywords" {...field} />
-                                    </FormControl>
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="author"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Entry Authour</FormLabel>
-                                    <FormControl>
-                                        <Input placeholder="Enter author name" {...field} />
-                                    </FormControl>
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="licence"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Licence</FormLabel>
-                                    <FormControl>
-                                        <Input placeholder="Enter licence type" {...field} />
-                                    </FormControl>
-                                </FormItem>
-                            )}
-                        />
-                    </form>
-                </Form>
+
+                <div className="space-y-4">
+                    <div>
+                        <Label>Package Name</Label>
+                        <Input
+                            onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                                setPackageInfo({ ...packageInfo, name: e.target.value })
+                            }}
+                            value={packageInfo.name}
+                            placeholder="Enter package name" />
+                    </div>
+
+
+                    <div>
+                        <Label>Package Version</Label>
+                        <Input
+                            onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                                setPackageInfo({ ...packageInfo, version: e.target.value })
+                            }}
+                            value={packageInfo.version}
+                            placeholder="Enter version" />
+                    </div>
+
+
+                    <div>
+                        <Label>Package Description</Label>
+                        <Textarea
+                            onChange={(e: ChangeEvent<HTMLTextAreaElement>) => {
+                                setPackageInfo({ ...packageInfo, description: e.target.value })
+                            }}
+                            value={packageInfo.description}
+                            placeholder="Enter package description" />
+                    </div>
+
+
+                    <div>
+                        <Label>Entry Point</Label>
+                        <Input
+                            onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                                setPackageInfo({ ...packageInfo, main: e.target.value })
+                            }}
+                            value={packageInfo.main}
+                            placeholder="Enter entry point" />
+                    </div>
+
+
+                    <div>
+                        <Label>Entry Test Command</Label>
+                        <Input
+                            onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                                setPackageInfo({ ...packageInfo, scripts: { test: e.target.value } })
+                            }}
+                            value={packageInfo.scripts.test}
+                            placeholder="Enter test command" />
+                    </div>
+
+
+                    <div>
+                        <Label>Entry Keywords (comma seperated)</Label>
+                        <Input
+                            onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                                setPackageInfo({ ...packageInfo, keywords: e.target.value.split(",") })
+                            }}
+                            value={packageInfo.keywords?.join(",")}
+                            placeholder="Enter keywords" />
+                    </div>
+
+                    <div>
+                        <Label>Entry Authour</Label>
+                        <Input
+                            onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                                setPackageInfo({ ...packageInfo, author: e.target.value })
+                            }}
+                            value={packageInfo.author}
+                            placeholder="Enter author name" />
+                    </div>
+
+
+                    <div>
+                        <Label>Licence</Label>
+                        <Input
+                            onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                                setPackageInfo({ ...packageInfo, license: e.target.value })
+                            }}
+                            value={packageInfo.license}
+                            placeholder="Enter licence type" />
+                    </div>
+
+                </div>
             </div>
         </div>
     )
