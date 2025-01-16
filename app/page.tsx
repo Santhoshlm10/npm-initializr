@@ -37,7 +37,7 @@ export default function Home() {
     keywords:[]
   });
   console.log("ChangePackage",packageInfo)
-  const [dependencyList,setDependencyList] = useState<ObjectTemplate>({});
+  // const [dependencyList,setDependencyList] = useState<ObjectTemplate>({});
 
   const handleDownloadClick = async () => {
     const zip = new JSZip();
