@@ -97,6 +97,13 @@ const PackageDependency = ({ setDependencyList, dependencyList }: { setDependenc
     setImportedPackages([...selectedPackages]);
   }, [selectedPackages]);
 
+  const removePackage = useCallback((packageName: string) => {
+    setImportedPackages(importedPackages.filter(item => item !== packageName));
+    let temp = { ...dependencyList };
+    delete temp[packageName];
+    setDependencyList(temp);
+  }, [importedPackages, dependencyList, setDependencyList]);
+
 
   const handleApplyChanges = useCallback(async () => {
     if (importedPackages.length > 0) {
@@ -158,8 +165,8 @@ const PackageDependency = ({ setDependencyList, dependencyList }: { setDependenc
                       }
                     </SelectContent>
                   </Select>
-                  <Button variant="outline" size="icon">
-                    <TrashIcon size={14} className="text-red-500" />
+                  <Button variant="outline" size="icon" onClick={() => removePackage(key)}>
+                    <TrashIcon size={14} className="text-red-500"/>
                   </Button>
                 </div>
               </div>
