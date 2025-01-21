@@ -99,7 +99,7 @@ const PackageDependency = ({ setDependencyList, dependencyList }: { setDependenc
 
   const removePackage = useCallback((packageName: string) => {
     setImportedPackages(importedPackages.filter(item => item !== packageName));
-    let temp = { ...dependencyList };
+    const temp = { ...dependencyList };
     delete temp[packageName];
     setDependencyList(temp);
   }, [importedPackages, dependencyList, setDependencyList]);
