@@ -1,8 +1,6 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";
 import {
@@ -13,34 +11,44 @@ import {
 } from "@/components/ui/dialog";
 import {
   ChevronRight,
+  TrashIcon,
 } from "lucide-react";
 import { Input } from "../ui/input";
 import { useQuery } from "@tanstack/react-query";
-import { getSuggesstions } from "@/apis/apis";
+import { getPackageInfo, getSuggesstions } from "@/apis/apis";
 import { useDebouncedCallback } from "use-debounce";
 import { PackageInfo } from "@/models/package";
 import { ScrollArea } from "../ui/scroll-area";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import { Separator } from "../ui/separator";
 import { Checkbox } from "../ui/checkbox";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import LoadingSpinner from "../ui/LoadingSpinner";
 
-const PackageDependency = () => {
+const PackageDependency = ({ setDependencyList, dependencyList }: { setDependencyList: (data: Record<string, { version: string[], selected: string }>) => void; dependencyList: Record<string, { version: string[], selected: string }> }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const searchInput = useRef<string | null>("");
+
   const [selectedPackages, setSelectedPackages] = useState<string[]>([]);
   const [importedPackages, setImportedPackages] = useState<string[]>([]);
 
 
   const {
     data,
-    isFetching,
+    isLoading,
     refetch: fetchSuggestedPackages,
   } = useQuery({
     queryFn: async () => await getSuggesstions(searchInput.current as string),
-    queryKey: [""],
+    queryKey: ["suggestions"],
     enabled: false,
   });
+
+  const { refetch: fetchPackageInfo, isLoading: isFetchPackageLoading } = useQuery({
+    queryFn: async () => await getPackageInfo(importedPackages),
+    queryKey: ["info"],
+    enabled: false,
+  })
 
   const Loader = () => {
     return (
@@ -85,9 +93,82 @@ const PackageDependency = () => {
     }
   }, [selectedPackages]);
 
-  const handleIncludePackage = useCallback(() => {
+  const handleImportPackage = useCallback(async () => {
     setImportedPackages([...selectedPackages]);
   }, [selectedPackages]);
+
+
+  const handleApplyChanges = useCallback(async () => {
+    if (importedPackages.length > 0) {
+      const res = await fetchPackageInfo();
+      const data = res.data?.reduce((acc: Record<string, { version: string[], selected: string }>, itr) => {
+        if (itr.status === "fulfilled") {
+          const { name, versions } = itr.value;
+          const versionList = Object.keys(versions).reverse()
+          acc[name] = {
+            version: versionList,
+            selected: versionList[0]
+          };
+        }
+        return acc;
+      }, {});
+      if (data) {
+        setDependencyList(data);
+      }
+    }
+    setIsOpen(false);
+  }, [importedPackages, fetchPackageInfo, setDependencyList]);
+
+
+  const handleVersionChange = useCallback((keyName:string,newValue:string) => {
+    setDependencyList({
+      ...dependencyList,
+      [keyName]: {
+        ...dependencyList[keyName],
+        selected: newValue
+      }
+    })
+  }, [dependencyList, setDependencyList]);
+
+  const renderPackageList = useMemo(() => {
+    return (
+      <div className="space-y-4 mt-8">
+        {
+          Object.keys(dependencyList).map((key: string, index: number) => {
+            return (
+              <div key={index} className="flex items-center gap-2 m-2 justify-between">
+                <div>
+                  <Label>{key}</Label>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Select
+                    value={dependencyList[key].selected}
+                    onValueChange={(e:string) => handleVersionChange(key,e)}
+                  >
+                    <SelectTrigger className="w-[150px]">
+                      <SelectValue placeholder="Select version" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {
+                        dependencyList[key].version.reverse().map((item: string, index: number) => {
+                          return (
+                            <SelectItem key={index} value={item}>{item}</SelectItem>
+                          )
+                        })
+                      }
+                    </SelectContent>
+                  </Select>
+                  <Button variant="outline" size="icon">
+                    <TrashIcon size={14} className="text-red-500" />
+                  </Button>
+                </div>
+              </div>
+            )
+          })
+        }
+      </div>
+    )
+  }, [dependencyList, handleVersionChange]);
 
   return (
     <>
@@ -98,6 +179,7 @@ const PackageDependency = () => {
             Import Packages
           </Button>
         </div>
+        {renderPackageList}
       </div>
       {isOpen && (
         <div>
@@ -116,7 +198,7 @@ const PackageDependency = () => {
                       onChange={(e) => debounced(e.target.value)}
                       className="mt-2"
                     />
-                    {isFetching && <Loader />}
+                    {isLoading && <Loader />}
 
                     <ScrollArea className="h-96 w-96 md:w-72 lg:w-96 rounded-md border">
                       <div className="p-4">
@@ -140,12 +222,12 @@ const PackageDependency = () => {
                     <div className="flex flex-col items-center justify-center gap-4">
                       <Tooltip>
                         <TooltipTrigger asChild>
-                          <Button variant="outline" size="icon" onClick={handleIncludePackage}>
+                          <Button variant="outline" size="icon" onClick={handleImportPackage}>
                             <ChevronRight />
                           </Button>
                         </TooltipTrigger>
                         <TooltipContent>
-                          <Label>Include</Label>
+                          <Label>Import</Label>
                         </TooltipContent>
                       </Tooltip>
                     </div>
@@ -174,7 +256,10 @@ const PackageDependency = () => {
                   <Button variant={"outline"} onClick={() => setIsOpen(false)}>
                     Cancel
                   </Button>
-                  <Button onClick={() => setIsOpen(false)}>
+                  <Button disabled={isFetchPackageLoading} onClick={handleApplyChanges}>
+                    {
+                      isFetchPackageLoading && <LoadingSpinner className="" />
+                    }
                     Apply Changes
                   </Button>
                 </div>

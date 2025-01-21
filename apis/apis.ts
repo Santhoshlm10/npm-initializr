@@ -11,6 +11,10 @@ async function getData(url:string) {
 export async function getSuggesstions(keyword: string) {
     return await getData(SEARCH_URL + keyword) as PackageResponse
 }
-export async function getPackageInfo(packageName:string){
-    return await getData(PACKAGE_INFO + packageName)
+export async function getPackageInfo(packageName:string[]){
+    let result = []
+    for (let i = 0; i < packageName.length; i++) {
+        result.push(getData(PACKAGE_INFO + packageName[i]))
+    }
+    return await Promise.allSettled(result)
 }

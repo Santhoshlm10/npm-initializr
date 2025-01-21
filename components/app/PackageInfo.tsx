@@ -4,9 +4,12 @@ import { Label } from "../ui/label";
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { ChangeEvent } from "react";
+import EntryPoint from "../ui/EntryPoint";
+import LicencePicker from "../ui/LicencePicker";
+import ScriptCommand from "../ui/ScriptCommand";
 
 interface PackageInfoProps {
-    setPackageInfo: (data:IPackageInfo) => void;
+    setPackageInfo: (data: IPackageInfo) => void;
     packageInfo: IPackageInfo;
 }
 
@@ -54,23 +57,17 @@ const PackageInfo = ({ setPackageInfo, packageInfo }: PackageInfoProps) => {
 
                     <div>
                         <Label>Entry Point</Label>
-                        <Input
-                            onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                                setPackageInfo({ ...packageInfo, main: e.target.value })
-                            }}
-                            value={packageInfo.main}
-                            placeholder="Enter entry point" />
+                        <EntryPoint returnValue={(value: string) => {
+                            setPackageInfo({ ...packageInfo, main: value })
+                        }} />
                     </div>
 
 
                     <div>
-                        <Label>Entry Test Command</Label>
-                        <Input
-                            onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                                setPackageInfo({ ...packageInfo, scripts: { test: e.target.value } })
-                            }}
-                            value={packageInfo.scripts.test}
-                            placeholder="Enter test command" />
+                        <ScriptCommand returnScript={(result) => {
+                            setPackageInfo({ ...packageInfo, scripts: result })
+
+                        }} />
                     </div>
 
 
@@ -97,12 +94,9 @@ const PackageInfo = ({ setPackageInfo, packageInfo }: PackageInfoProps) => {
 
                     <div>
                         <Label>Licence</Label>
-                        <Input
-                            onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                                setPackageInfo({ ...packageInfo, license: e.target.value })
-                            }}
-                            value={packageInfo.license}
-                            placeholder="Enter licence type" />
+                        <LicencePicker setLicence={(value: string) => {
+                            setPackageInfo({ ...packageInfo, license: value })
+                        }} />
                     </div>
 
                 </div>
