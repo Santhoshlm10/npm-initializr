@@ -5,6 +5,4 @@
 
 Starter for your node js project, similar to spring initializr https://start.spring.io/
 
-Demo Video:
-
-<video src="https://npminit.vercel.app/demo.mp4" controls width="100%"></video>
+Demo Video: https://npminit.vercel.app/demo.mp4
