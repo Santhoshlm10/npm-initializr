@@ -57,7 +57,7 @@ export default function Home() {
   return (
     <TooltipProvider>
 
-      <div className="m-2 p-2">
+      <div className="container mx-auto">
         <div>
           <AppHeaderLogo />
           <hr className="h-px bg-gray-200 border-0 dark:bg-gray-700" />

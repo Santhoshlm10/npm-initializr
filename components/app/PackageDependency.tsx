@@ -127,7 +127,7 @@ const PackageDependency = ({ setDependencyList, dependencyList }: { setDependenc
   }, [importedPackages, fetchPackageInfo, setDependencyList]);
 
 
-  const handleVersionChange = useCallback((keyName:string,newValue:string) => {
+  const handleVersionChange = useCallback((keyName: string, newValue: string) => {
     setDependencyList({
       ...dependencyList,
       [keyName]: {
@@ -140,48 +140,43 @@ const PackageDependency = ({ setDependencyList, dependencyList }: { setDependenc
   const renderPackageList = useMemo(() => {
     return (
       <div className="space-y-4 mt-8">
-        {
-          Object.keys(dependencyList).map((key: string, index: number) => {
-            return (
-              <div key={index} className="flex items-center gap-2 m-2 justify-between">
-                <div>
-                  <Label>{key}</Label>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Select
-                    value={dependencyList[key].selected}
-                    onValueChange={(e:string) => handleVersionChange(key,e)}
-                  >
-                    <SelectTrigger className="w-[150px]">
-                      <SelectValue placeholder="Select version" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {
-                        dependencyList[key].version.reverse().map((item: string, index: number) => {
-                          return (
-                            <SelectItem key={index} value={item}>{item}</SelectItem>
-                          )
-                        })
-                      }
-                    </SelectContent>
-                  </Select>
-                  <Button variant="outline" size="icon" onClick={() => removePackage(key)}>
-                    <TrashIcon size={14} className="text-red-500"/>
-                  </Button>
-                </div>
+        {Object.keys(dependencyList).map((key: string, index: number) => (
+          <>
+            <div key={index} className="flex flex-col sm:flex-row items-center gap-2 m-2 justify-between">
+              <div>
+                <Label>{key}</Label>
               </div>
-            )
-          })
-        }
-      </div>
-    )
-  }, [dependencyList, handleVersionChange]);
+              <div className="flex items-center gap-2">
+                <Select
+                  value={dependencyList[key].selected}
+                  onValueChange={(e: string) => handleVersionChange(key, e)}
+                >
+                  <SelectTrigger className="w-[150px]">
+                    <SelectValue placeholder="Select version" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {dependencyList[key].version.reverse().map((item: string, index: number) => (
+                      <SelectItem key={index} value={item}>{item}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <Button variant="outline" size="icon" onClick={() => removePackage(key)}>
+                  <TrashIcon size={14} className="text-red-500" />
+                </Button>
+              </div>
+            </div>
+            <Separator className="my-2" />
 
+          </>
+        ))}
+      </div>
+    );
+  }, [dependencyList, handleVersionChange]);
   return (
     <>
-      <div className="mt-2 w-12/12">
+      <div className="mt-4 w-full mb-2">
         <div className="flex gap-2 items-center justify-between">
-          <Label className="text-base font-bold">Package Dependency</Label>
+          <Label className="text-base font-bold">Packages</Label>
           <Button variant={"outline"} onClick={() => setIsOpen(true)}>
             Import Packages
           </Button>
@@ -189,91 +184,73 @@ const PackageDependency = ({ setDependencyList, dependencyList }: { setDependenc
         {renderPackageList}
       </div>
       {isOpen && (
-        <div>
-          <Dialog open={isOpen} onOpenChange={setIsOpen}>
-            <DialogContent className="min-w-[930px] max-w-[50vw]">
-              <DialogHeader className="space-y-6">
-                <DialogTitle>Import Packages</DialogTitle>
-              </DialogHeader>
-              <div>
-                <div className="flex flex-row items-center gap-2 mt-4">
-                  <div className="space-y-2">
-
-                    <Label className="text-sm font-medium leading-none">Package List</Label>
-                    <Input
-                      placeholder="Search for packages"
-                      onChange={(e) => debounced(e.target.value)}
-                      className="mt-2"
-                    />
-                    {isLoading && <Loader />}
-
-                    <ScrollArea className="h-96 w-96 md:w-72 lg:w-96 rounded-md border">
-                      <div className="p-4">
-                        {
-                          data && data?.objects && data?.objects.map((item: PackageInfo, index: number) => {
-                            return (
-                              <div key={index}>
-                                <div className="text-sm flex items-center gap-2">
-                                  <Checkbox checked={selectedPackages.includes(item.package.name)} onCheckedChange={(checked: boolean) => handleCheck(checked, item.package.name)} />
-                                  {item.package.name}
-                                </div>
-                                <Separator className="my-2" />
-                              </div>
-                            )
-                          })
-                        }
+        <Dialog open={isOpen} onOpenChange={setIsOpen}>
+          <DialogContent className="sm:max-w-[90vw] sm:max-h-[90vh] max-h-[80vh] overflow-y-auto">
+            <DialogHeader className="space-y-6">
+              <DialogTitle>Import Packages</DialogTitle>
+            </DialogHeader>
+            <div className="flex flex-col md:flex-row gap-4 mt-4">
+              <div className="flex-1 space-y-2">
+                <Label className="text-sm font-medium leading-none">Package List</Label>
+                <Input
+                  placeholder="Search for packages"
+                  onChange={(e) => debounced(e.target.value)}
+                  className="mt-2"
+                />
+                {isLoading && <Loader />}
+                <ScrollArea className="h-96 rounded-md border">
+                  <div className="p-4">
+                    {data && data?.objects && data?.objects.map((item: PackageInfo, index: number) => (
+                      <div key={index}>
+                        <div className="text-sm flex items-center gap-2">
+                          <Checkbox checked={selectedPackages.includes(item.package.name)} onCheckedChange={(checked: boolean) => handleCheck(checked, item.package.name)} />
+                          {item.package.name}
+                        </div>
+                        <Separator className="my-2" />
                       </div>
-                    </ScrollArea>
+                    ))}
                   </div>
-                  <div className="w-24">
-                    <div className="flex flex-col items-center justify-center gap-4">
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Button variant="outline" size="icon" onClick={handleImportPackage}>
-                            <ChevronRight />
-                          </Button>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <Label>Import</Label>
-                        </TooltipContent>
-                      </Tooltip>
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <Label className="text-sm font-medium leading-none">Selected Packages</Label>
-                    <ScrollArea className="h-96 w-96 md:w-72 lg:w-96 rounded-md border">
-                      <div className="p-4">
-                        {
-                          importedPackages.map((item: string, index: number) => {
-                            return (
-                              <div key={index}>
-                                <div className="text-sm">
-                                  {item}
-                                </div>
-                                <Separator className="my-2" />
-                              </div>
-                            )
-                          })
-                        }
-                      </div>
-                    </ScrollArea>
-                  </div>
-                </div>
-                <div className="flex justify-end gap-4 mt-4">
-                  <Button variant={"outline"} onClick={() => setIsOpen(false)}>
-                    Cancel
-                  </Button>
-                  <Button disabled={isFetchPackageLoading} onClick={handleApplyChanges}>
-                    {
-                      isFetchPackageLoading && <LoadingSpinner className="" />
-                    }
-                    Apply Changes
-                  </Button>
-                </div>
+                </ScrollArea>
               </div>
-            </DialogContent>
-          </Dialog>
-        </div>
+              <div className="flex items-center justify-center">
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button variant="outline" size="icon" onClick={handleImportPackage}>
+                      <ChevronRight />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <Label>Import</Label>
+                  </TooltipContent>
+                </Tooltip>
+              </div>
+              <div className="flex-1 space-y-2">
+                <Label className="text-sm font-medium leading-none">Selected Packages</Label>
+                <ScrollArea className="h-96 rounded-md border">
+                  <div className="p-4">
+                    {importedPackages.map((item: string, index: number) => (
+                      <div key={index}>
+                        <div className="text-sm">
+                          {item}
+                        </div>
+                        <Separator className="my-2" />
+                      </div>
+                    ))}
+                  </div>
+                </ScrollArea>
+              </div>
+            </div>
+            <div className="flex justify-end gap-4 mt-4">
+              <Button variant={"outline"} onClick={() => setIsOpen(false)}>
+                Cancel
+              </Button>
+              <Button disabled={isFetchPackageLoading} onClick={handleApplyChanges}>
+                {isFetchPackageLoading && <LoadingSpinner className="" />}
+                Apply Changes
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
       )}
     </>
   );

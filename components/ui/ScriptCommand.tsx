@@ -16,7 +16,7 @@ export default function ScriptCommand(props: ScriptProps) {
   const [scripts, setScripts] = useState<ScriptObject[]>([
     {
       name: "test",
-      command: "",
+      command: "npm test",
     },
   ]);
 
@@ -49,45 +49,46 @@ export default function ScriptCommand(props: ScriptProps) {
 
   return (
     <div>
-      <div className="flex items-center justify-between pb-1">
-        <div>
-          <Label>Entry Script Command</Label>
-        </div>
-        <div
-          className="flex items-center gap-2 cursor-pointer hover:opacity-80"
-          onClick={addScript}
-        >
-          <PlusIcon size={14} />
-          <Label>Add</Label>
-        </div>
+    <div className="flex items-center justify-between pb-1">
+      <div>
+        <Label>Entry Script Command</Label>
       </div>
-      <div className="space-y-4">
-        {scripts.map((script, index) => (
-          <div key={index} className="flex flex-row gap-2 items-center">
-            <Input
-              placeholder="Command name"
-              className="w-[200px]"
-              value={script.name}
-              onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                updateScript(index, "name", e.target.value)
-              }
-            />
-            <Input
-              placeholder="Enter script command"
-              value={script.command}
-              onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                updateScript(index, "command", e.target.value)
-              }
-            />
-            <div
-              className="cursor-pointer hover:opacity-80"
-              onClick={() => removeScript(index)}
-            >
-              <TrashIcon size={14} className="text-red-500" />
-            </div>
-          </div>
-        ))}
+      <div
+        className="flex items-center gap-2 cursor-pointer hover:opacity-80"
+        onClick={addScript}
+      >
+        <PlusIcon size={14} />
+        <Label>Add</Label>
       </div>
     </div>
+    <div className="space-y-4">
+      {scripts.map((script, index) => (
+        <div key={index} className="flex flex-col sm:flex-row gap-2 items-center">
+          <Input
+            placeholder="Command name"
+            className="w-full sm:w-[200px]"
+            value={script.name}
+            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+              updateScript(index, "name", e.target.value)
+            }
+          />
+          <Input
+            placeholder="Enter script command"
+            className="w-full"
+            value={script.command}
+            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+              updateScript(index, "command", e.target.value)
+            }
+          />
+          <div
+            className="cursor-pointer hover:opacity-80"
+            onClick={() => removeScript(index)}
+          >
+            <TrashIcon size={14} className="text-red-500" />
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
   );
 }
